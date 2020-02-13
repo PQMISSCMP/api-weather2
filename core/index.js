@@ -7,5 +7,4 @@ app.use(rutas);
 
 app.listen(puerto, () => {
     console.log(`Iniciando servidor en puerto ${puerto}`);
-    
 });

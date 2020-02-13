@@ -1,5 +1,6 @@
 const request = require("request-promise-native");
-const asyncRedis = require("async-redis"); 
+const asyncRedis = require("async-redis");
+const cliente = require("redis");
 
 const clienteRedis = asyncRedis.createClient({host: process.env.REDIS_HOST, port: process.env.REDIS_PORT});
 
@@ -19,20 +20,23 @@ async function obtenerclima(req, res){
         }else{
             console.log(`consulto la API`);
             const responseApiWeather = await getWeather(latitud, longitud, secretkey);
-            setRedis(keyRedis, responseApiWeather)
+            setRedis(keyRedis, responseApiWeather);            
             res.status(200).send(JSON.parse(responseApiWeather));
         }
-    } catch (error) {
-        res.status(500).send(error.message);
+    } catch (error) {       
+        res.status(500).send({error: JSON.parse(error)});
     }
 }
 
 async function getWeather(latitud,longitud , secretkey){
     try {
         const API_WEATHER = `${process.env.API_WEATHER}/${secretkey}/${latitud},${longitud}`;
-        return resultApiWeather = await request.get(API_WEATHER);    
-    } catch (error) {       
-        throw error;
+        const resultApiWeather = await request.get(API_WEATHER);
+        if (typeof resultApiWeather === "undefined") { throw new Error("Verifique los parametros de entrada") }
+        return resultApiWeather;
+    } catch (issue) {
+        console.log(issue.error);
+        throw (issue.error);
     }
 }
 
