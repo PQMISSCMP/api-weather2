@@ -1,7 +1,8 @@
 const request = require("request-promise-native");
-const asyncRedis = require("async-redis"); 
+const asyncRedis = require("async-redis");
+const cliente = require("redis");
 
-const clienteRedis = asyncRedis.createClient({host: process.env.SERVER_REDIS, port: 6379});
+const clienteRedis = asyncRedis.createClient({host: process.env.REDIS_HOST, port: process.env.REDIS_PORT});
 
 async function obtenerclima(req, res){
 
@@ -14,32 +15,35 @@ async function obtenerclima(req, res){
         const { isKey, valueCache } = await isKeyRedis(keyRedis);
 
         if (isKey){
-            console.log(`Consulto la cache:  ${keyRedis}`);
+            console.log(`consulto la cache:  ${keyRedis}`);
             res.status(200).send(JSON.parse(valueCache));
         }else{
-            console.log(`Consulto la API`);
+            console.log(`consulto la API`);
             const responseApiWeather = await getWeather(latitud, longitud, secretkey);
-            setRedis(keyRedis, responseApiWeather)
+            setRedis(keyRedis, responseApiWeather);            
             res.status(200).send(JSON.parse(responseApiWeather));
         }
-    } catch (error) {
-        res.status(500).send(error.message);
+    } catch (error) {       
+        res.status(500).send({error: JSON.parse(error)});
     }
 }
 
 async function getWeather(latitud,longitud , secretkey){
     try {
         const API_WEATHER = `${process.env.API_WEATHER}/${secretkey}/${latitud},${longitud}`;
-        return resultApiWeather = await request.get(API_WEATHER);    
-    } catch (error) {       
-        throw error;
+        const resultApiWeather = await request.get(API_WEATHER);
+        if (typeof resultApiWeather === "undefined") { throw new Error("Verifique los parametros de entrada") }
+        return resultApiWeather;
+    } catch (issue) {
+        console.log(issue.error);
+        throw (issue.error);
     }
 }
 
 
 async function isKeyRedis(keyRedis){
     const value = await clienteRedis.get(keyRedis);
-    return { isKey: value !== null, valueCache: value };
+    return { isKey: value !== null, valueCache: value }
 }
 
 async function setRedis(keyRedis, jsonWeather){
