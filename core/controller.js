@@ -1,7 +1,7 @@
 const request = require("request-promise-native");
 const asyncRedis = require("async-redis"); 
 
-const clienteRedis = asyncRedis.createClient({host: process.env.SERVER_REDIS, port: 6379});
+const clienteRedis = asyncRedis.createClient({host: process.env.REDIS_HOST, port: process.env.REDIS_PORT});
 
 async function obtenerclima(req, res){
 
@@ -14,10 +14,10 @@ async function obtenerclima(req, res){
         const { isKey, valueCache } = await isKeyRedis(keyRedis);
 
         if (isKey){
-            console.log(`Consulto la cache:  ${keyRedis}`);
+            console.log(`consulto la cache:  ${keyRedis}`);
             res.status(200).send(JSON.parse(valueCache));
         }else{
-            console.log(`Consulto la API`);
+            console.log(`consulto la API`);
             const responseApiWeather = await getWeather(latitud, longitud, secretkey);
             setRedis(keyRedis, responseApiWeather)
             res.status(200).send(JSON.parse(responseApiWeather));
@@ -39,7 +39,7 @@ async function getWeather(latitud,longitud , secretkey){
 
 async function isKeyRedis(keyRedis){
     const value = await clienteRedis.get(keyRedis);
-    return { isKey: value !== null, valueCache: value };
+    return { isKey: value !== null, valueCache: value }
 }
 
 async function setRedis(keyRedis, jsonWeather){
