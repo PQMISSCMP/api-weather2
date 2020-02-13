@@ -1,0 +1,10 @@
+version: '3'
+services:
+  redis-server: 
+    image: 'redis'
+    env_file: 
+    - ./.env
+  node-app:
+    build: .
+    ports:
+      - "8000:4000"
