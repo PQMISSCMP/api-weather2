@@ -1,14 +1,16 @@
 const request = require("request-promise-native");
 const asyncRedis = require("async-redis");
-const cliente = require("redis");
 
 const clienteRedis = asyncRedis.createClient({host: process.env.REDIS_HOST, port: process.env.REDIS_PORT});
 
-async function obtenerclima(req, res){
+const obtenerclima = async(req, res) => {
+
+    
+    res.header("Access-Control-Allow-Origin", req.headers.origin);
 
     const latitud = req.params.latitud;
     const longitud = req.params.longitud;
-    const secretkey = req.headers['key-weather']; 
+    const secretkey = process.env.API_KEY; 
     
     try {
         const keyRedis = `KEY${latitud},${longitud}`;
@@ -28,7 +30,7 @@ async function obtenerclima(req, res){
     }
 }
 
-async function getWeather(latitud,longitud , secretkey){
+const getWeather = async(latitud,longitud , secretkey) => {
     try {
         const API_WEATHER = `${process.env.API_WEATHER}/${secretkey}/${latitud},${longitud}`;
         const resultApiWeather = await request.get(API_WEATHER);
@@ -41,14 +43,13 @@ async function getWeather(latitud,longitud , secretkey){
 }
 
 
-async function isKeyRedis(keyRedis){
+const isKeyRedis  = async(keyRedis) => {
     const value = await clienteRedis.get(keyRedis);
     return { isKey: value !== null, valueCache: value }
 }
 
-async function setRedis(keyRedis, jsonWeather){
+const setRedis = async(keyRedis, jsonWeather) => {
     await clienteRedis.set(keyRedis, jsonWeather);
 }
-
 
 module.exports  = { obtenerclima }
