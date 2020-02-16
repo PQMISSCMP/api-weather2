@@ -3,7 +3,7 @@ const asyncRedis = require("async-redis");
 
 const clienteRedis = asyncRedis.createClient(process.env.REDISCLOUD_URL, {no_ready_check: true});
 
-const obtenerclima = async(req, res) => {
+const obtenerClima = async(req, res) => {
 
     const latitud = req.params.latitud;
     const longitud = req.params.longitud;
@@ -31,7 +31,7 @@ const obtenerclima = async(req, res) => {
 
 const getWeather = async(latitud,longitud , secretkey) => {
     try {
-        const API_WEATHER = `${process.env.API_WEATHER}/${secretkey}/${latitud},${longitud}`;
+        const API_WEATHER = `${process.env.API_URL}/${secretkey}/${latitud},${longitud}`;
         const resultApiWeather = await request.get(API_WEATHER);
         if (typeof resultApiWeather === "undefined") { throw new Error("Verifique los parametros de entrada") }
         return resultApiWeather;
@@ -51,4 +51,4 @@ const setRedis = async(keyRedis, jsonWeather) => {
     await clienteRedis.set(keyRedis, jsonWeather);
 }
 
-module.exports  = { obtenerclima }
+module.exports  = { obtenerclima: obtenerClima }

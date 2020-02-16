@@ -1,0 +1,110 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Servicio de climatología",
+    "description": "Este servicio provee informacion respecto al clima de diferentes partes del mundo. Utilice la api según lo especificado aquí.",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "/clima",
+      "description": ""
+    }
+  ],
+  "paths": {
+
+  "/clima/{latitud}/{longitud}": {
+    "get": {
+      "tags": [
+        "/clima"
+      ],
+      "summary": "Obtiene toda la información climatológico respecto a las coordenadas ingresadas",
+      "operationId": "obtenerClima",
+      "parameters": [
+        {
+          "name": "latitud",
+          "in": "path",
+          "description": "Valor de la latitud. (Acepta números negativos)",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "longitud",
+          "in": "path",
+          "description": "Valor de la longitud. (Acepta números negativos)",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Trae json con la data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/clima"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "The given location is invalid",
+          "content": {}
+        }
+        
+      }
+    }
+  }
+  },
+  "components": {
+    "schemas": {
+      "clima": {
+        "type": "object",
+        "properties": {
+          "latitude": {
+            "type": "integer",
+            "example": 32.26817702664829
+          },
+          "longitud": {
+            "type": "integer",
+            "example": 26.24472242372131
+          },
+          "timezone": {
+            "type": "string",
+            "example": "Asia/Riyadh"
+          },
+          "currently": {
+            "type": "object",
+            "example": {
+              "time": 1581858414,
+              "summary": "Partly Cloudy",
+              "icon": "partly-cloudy-day",
+              "precipIntensity": 0,
+              "precipProbability": 0,
+              "temperature": 85.81,
+              "apparentTemperature": 85.81,
+              "dewPoint": 41.46,
+              "humidity": 0.21,
+              "pressure": 1009.5,
+              "windSpeed": 21.29,
+              "windGust": 26.34,
+              "windBearing": 262,
+              "cloudCover": 0.54,
+              "uvIndex": 2,
+              "visibility": 10,
+              "ozone": 275.7
+              }
+          },
+          "hourly": {
+            "type": "Object",
+            "example": { }
+          }
+        }
+      }
+    }
+  }
+}
