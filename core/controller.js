@@ -1,17 +1,16 @@
 const request = require("request-promise-native");
 const asyncRedis = require("async-redis");
 
-const clienteRedis = asyncRedis.createClient({host: process.env.REDIS_HOST, port: process.env.REDIS_PORT});
+const clienteRedis = asyncRedis.createClient(process.env.REDISCLOUD_URL, {no_ready_check: true});
 
 const obtenerclima = async(req, res) => {
-
-    
-    res.header("Access-Control-Allow-Origin", req.headers.origin);
 
     const latitud = req.params.latitud;
     const longitud = req.params.longitud;
     const secretkey = process.env.API_KEY; 
     
+    res.header("Access-Control-Allow-Origin", req.headers.origin);
+
     try {
         const keyRedis = `KEY${latitud},${longitud}`;
         const { isKey, valueCache } = await isKeyRedis(keyRedis);
