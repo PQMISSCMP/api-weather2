@@ -41,6 +41,9 @@ const obtenerClima = async(req, res) => {
             console.log("obtenerClima: ", issue.error); 
             res.status(500).send({error: issue.error});
         }
+        else {
+            res.status(500).send({error: 'Error inesperado'});
+        }
         
     }
 }
