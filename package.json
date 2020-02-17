@@ -6,11 +6,13 @@
   "scripts": {
     "start": "nodemon index.js",
     "local": "docker-compose up --build --force-recreate",
+    "config": "heroku config -a api-weather2",
+    "log": "heroku logs -a api-weather2 --tail",
     "docker-build": "docker build -t api-weather2 .",
     "docker-tag": "docker tag api-weather2 registry.heroku.com/api-weather2/web",
     "preupload": "npm run docker-build && npm run docker-tag",
     "upload": "docker push registry.heroku.com/api-weather2/web",
-    "postupload": "heroku container:release web -a api-weather2 && heroku open -a api-weather2"
+    "postupload": "heroku container:release web -a api-weather2"
   },
   "keywords": [
     "api",
