@@ -1,8 +1,8 @@
 const express = require("express");
 const app = express();
 
-const { obtenerclima }  = require("./controller");
+const { obtenerClima } = require("./controller");
 
-app.get('/clima/:shortcountry', obtenerclima);
+app.get('/clima/:shortcountry', obtenerClima);
 
 module.exports = app;

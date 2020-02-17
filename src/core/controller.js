@@ -1,36 +1,47 @@
+
 const { getWeather, isKeyRedis, setRedis, getInfoCountry } = require("./repository");
 
 
 const obtenerClima = async(req, res) => {
 
     const shortCountry = req.params.shortcountry;
-    const secretkey = process.env.API_KEY; 
+    const secretkey = process.env.KEY_API_WEATHER; 
     
     res.header("Access-Control-Allow-Origin", req.headers.origin);
 
     try {
-        const keyRedis = `KEY-${shortCountry}`;
+        const keyRedis = `KEY-${shortCountry}-`;
         const { isKey, valueCache } = await isKeyRedis(keyRedis);
         if (isKey){
             console.log(`consulto la cache:  ${keyRedis}`);
-            res.status(200).send(JSON.parse(valueCache));
-        } else {
+            const dataParsed = JSON.parse(valueCache);
+            dataParsed.cache=true;
+            res.status(200).send(dataParsed);
+        }else{
 
             console.log(`consulto las APIs`);
             const { pais, capital, latitud, longitud } = await getInfoCountry(shortCountry);
-            const { temperatura, fechahora } = await getWeather(latitud, longitud, secretkey);
-            
+            const { fechahora, temperatura } = await getWeather(latitud, longitud, secretkey);
+
             const dataRedis = {
-                apiWeather: { temperatura, fechahora },
-                infoCountry: { pais, capital}
+                apiWeather: { fechahora, temperatura },
+                infoCountry: { capital, pais },
+                cache: false
             };
 
-            setRedis(keyRedis, dataRedis);            
-            res.status(200).send(JSON.parse(responseApiWeather));
+            setRedis(keyRedis, JSON.stringify(dataRedis));            
+            res.status(200).send(dataRedis);
 
         }
-    } catch (error) {
-        res.status(500).send({error: JSON.parse(error)});
+    } catch (issue) {       
+        if (issue.hasOwnProperty("mesagge")) { 
+            console.log("obtenerClima: ", issue.mesagge); 
+            res.status(500).send({error: issue.mesagge});
+        } else if (issue.hasOwnProperty("error")) { 
+            console.log("obtenerClima: ", issue.error); 
+            res.status(500).send({error: issue.error});
+        }
+        
     }
 }
 

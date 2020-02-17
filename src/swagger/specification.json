@@ -62,6 +62,10 @@
           "infoCountry": {
             "type": "object",
             "example": { "pais": "Perú", "capital":"Lima" }
+          },
+          "cache": {
+            "type": "boolean",
+            "example": "false"
           }
         }
       }
