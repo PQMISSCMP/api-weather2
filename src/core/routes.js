@@ -3,6 +3,6 @@ const app = express();
 
 const { obtenerclima }  = require("./controller");
 
-app.get('/clima/:latitud/:longitud', obtenerclima);
+app.get('/clima/:shortcountry', obtenerclima);
 
 module.exports = app;

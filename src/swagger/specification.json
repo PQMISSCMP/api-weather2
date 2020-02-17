@@ -13,36 +13,27 @@
   ],
   "paths": {
 
-  "/clima/{latitud}/{longitud}": {
+  "/clima/{shortcountry}": {
     "get": {
       "tags": [
         "/clima"
       ],
-      "summary": "Obtiene toda la información climatológico respecto a las coordenadas ingresadas",
+      "summary": "Obtiene información climatológico respecto al pais ingresado",
       "operationId": "obtenerClima",
       "parameters": [
         {
-          "name": "latitud",
+          "name": "shortcountry",
           "in": "path",
-          "description": "Valor de la latitud. (Acepta números negativos)",
+          "description": "Nombre corto de un pais. Por ej: Chile -> CL",
           "required": true,
           "schema": {
-            "type": "integer"
-          }
-        },
-        {
-          "name": "longitud",
-          "in": "path",
-          "description": "Valor de la longitud. (Acepta números negativos)",
-          "required": true,
-          "schema": {
-            "type": "integer"
+            "type": "string"
           }
         }
       ],
       "responses": {
         "200": {
-          "description": "Trae json con la data",
+          "description": "Trae objeto json con los datos",
           "content": {
             "application/json": {
               "schema": {
@@ -55,7 +46,6 @@
           "description": "The given location is invalid",
           "content": {}
         }
-        
       }
     }
   }
@@ -65,43 +55,13 @@
       "clima": {
         "type": "object",
         "properties": {
-          "latitude": {
-            "type": "integer",
-            "example": 32.26817702664829
-          },
-          "longitud": {
-            "type": "integer",
-            "example": 26.24472242372131
-          },
-          "timezone": {
-            "type": "string",
-            "example": "Asia/Riyadh"
-          },
-          "currently": {
+          "apiWeather": {
             "type": "object",
-            "example": {
-              "time": 1581858414,
-              "summary": "Partly Cloudy",
-              "icon": "partly-cloudy-day",
-              "precipIntensity": 0,
-              "precipProbability": 0,
-              "temperature": 85.81,
-              "apparentTemperature": 85.81,
-              "dewPoint": 41.46,
-              "humidity": 0.21,
-              "pressure": 1009.5,
-              "windSpeed": 21.29,
-              "windGust": 26.34,
-              "windBearing": 262,
-              "cloudCover": 0.54,
-              "uvIndex": 2,
-              "visibility": 10,
-              "ozone": 275.7
-              }
+            "example": { "temperatura": "78", "fechahora": "1581883525" }
           },
-          "hourly": {
-            "type": "Object",
-            "example": { }
+          "infoCountry": {
+            "type": "object",
+            "example": { "pais": "Perú", "capital":"Lima" }
           }
         }
       }
